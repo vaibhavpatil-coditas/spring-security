@@ -1,6 +1,5 @@
 package com.coderz.springsecurity.util;
 
-import com.coderz.springsecurity.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -29,8 +28,8 @@ public class JwtUtil {
                 .compact();
     }
 
-    public String extractUsername(String token){
-        return extractClaims(token).getSubject();
+    public boolean validateToken(String username, UserDetails userDetails, String token) {
+        return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
 
     private static Claims extractClaims(String token) {
@@ -38,19 +37,15 @@ public class JwtUtil {
                 .parserBuilder()
                 .setSigningKey(key)
                 .build()
-                .parseClaimsJws(token)
+                .parseClaimsJwt(token)
                 .getBody();
     }
 
-
-    public boolean validateToken(String username, UserDetails userDetails, String token) {
-        return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+    public String extractUsername(String token){
+        return extractClaims(token).getSubject();
     }
 
     private boolean isTokenExpired(String token) {
         return extractClaims(token).getExpiration().before(new Date());
     }
 }
-
-
-

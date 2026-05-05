@@ -1,0 +1,3 @@
+mock server/resource
+userdetails/userdetailsservice
+security context additional fields
